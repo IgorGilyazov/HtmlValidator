@@ -1,0 +1,60 @@
+{
+  /*
+    Verbosity level:
+      error - only errors and non-document errors are reported.
+  */
+
+  "level": "",
+
+  /*
+    Parser:
+      html    - HTML parser, configuration is based on doctype.
+      html5   - HTML parser in the HTML5 mode.
+      html4   - HTML parser insisting on HTML 4.01 Strict doctype
+                and emitting additional HTML 4 errors that are not HTML5 errors.
+      html4tr - HTML parser insisting on HTML 4.01 Transitional doctype
+                and emitting additional HTML 4 errors that are not HTML5 errors.
+  */
+
+  "parser": "html5",
+
+  /*
+    Connection timeout in seconds.
+  */
+
+  "timeout": 5,
+
+  /*
+    HTTP request compression method:
+      gzip - use gzip compression.
+  */
+
+  "request_compression": "",
+
+  /*
+    HTTP response compression method:
+      gzip - accept gzip compression.
+  */
+
+  "response_compression": "",
+
+  /*
+    Icon for error mark in the gutter:
+      dot
+      circle
+      bookmark
+      cross
+  */
+
+  "error_icon": "circle",
+
+  /*
+    Icon for warning mark in the gutter:
+      dot
+      circle
+      bookmark
+      cross
+  */
+
+  "warning_icon": "dot"
+}
