@@ -24,3 +24,20 @@ class Settings:
     Settings.response_compression = Settings.settings.get('response_compression', '')
     Settings.error_icon           = Settings.settings.get('error_icon', 'circle')
     Settings.warning_icon         = Settings.settings.get('warning_icon', 'dot')
+
+class Gzip:
+  @staticmethod
+  def compress(data, level = 9):
+    string_buffer = StringIO.StringIO()
+    gzip_file     = gzip.GzipFile(
+      fileobj       = string_buffer,
+      mode          = 'w',
+      compresslevel = level
+    )
+    gzip_file.write(data)
+    gzip_file.close()
+    return string_buffer.getvalue()
+
+  @staticmethod
+  def decompress(data):
+    return gzip.GzipFile( fileobj = StringIO.StringIO(data) ).read()
