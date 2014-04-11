@@ -41,3 +41,50 @@ class Gzip:
   @staticmethod
   def decompress(data):
     return gzip.GzipFile( fileobj = StringIO.StringIO(data) ).read()
+
+class ValidatorApi(threading.Thread):
+  validator = 'http://validator.nu/'
+
+  def __init__(self, data):
+    self.data         = data
+    self.query_string = 'out=json&parser=' + Settings.parser
+    if ( len(Settings.level) ):
+      self.query_string += '&level=' + Settings.level
+    self.state        = None
+    threading.Thread.__init__(self)
+
+  def run(self):
+    data    = self.data
+    headers = {
+      'Content-Type': 'text/html',
+      'User-Agent': 'Sublime Text %s plugin' % __name__
+    }
+
+    if (Settings.request_compression == 'gzip'):
+      headers['Content-Encoding'] = 'gzip'
+      data                        = Gzip.compress(data)
+
+    if (Settings.response_compression == 'gzip'):
+      headers['Accept-Encoding'] = 'gzip'
+
+    headers['Content-Length'] = len(data)
+
+    try:
+      response    = urllib2.urlopen(
+        urllib2.Request(
+          ValidatorApi.validator + '?' + self.query_string, data, headers
+        ),
+        timeout = Settings.timeout
+      )
+      self.result = response.read()
+    except (urllib2.HTTPError, urllib2.URLError) as e:
+      self.state = False
+      sublime.error_message(
+        '%s: %s' % ( __name__, str(e) )
+      )
+      return
+
+    if (response.info().getheader('Content-Encoding', '').lower() == 'gzip'):
+      self.result = Gzip.decompress(self.result)
+
+    self.state = True
