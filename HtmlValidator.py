@@ -200,3 +200,25 @@ class ShowHtmlViolationsCommand(sublime_plugin.TextCommand):
       )
 
     self.view.window().show_quick_panel(panel_items, on_done)
+
+class FindHtmlViolationCommand(sublime_plugin.TextCommand):
+  def is_enabled(self):
+    global violations
+    return self.view.id() in violations
+
+  def run(self, edit, forward = True):
+    view_id               = self.view.id()
+    current_selected_line = self.view.rowcol( self.view.sel()[0].end() )[0] + 1
+    lines                 = [
+      line for line in violations[view_id] if line > current_selected_line
+    ] if (forward) else [
+      line for line in violations[view_id] if line < current_selected_line
+    ]
+
+    if ( len(lines) ):
+      self.view.run_command(
+        'goto_line',
+        {
+          'line': min(lines) if (forward) else max(lines)
+        }
+      )
