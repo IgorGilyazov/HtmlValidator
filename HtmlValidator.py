@@ -173,3 +173,30 @@ class ValidateHtmlCommand(sublime_plugin.TextCommand):
       icon,
       sublime.HIDDEN
     )
+
+class ShowHtmlViolationsCommand(sublime_plugin.TextCommand):
+  def is_enabled(self):
+    global violations
+    return self.view.id() in violations
+
+  def run(self, edit):
+    global violations
+
+    view_id     = self.view.id()
+    panel_items = []
+
+    for v in violations[view_id].values():
+      panel_items.extend(v)
+
+    def on_done(selected_index):
+      if (selected_index == -1):
+        return
+
+      self.view.run_command(
+        'goto_line',
+        {
+          'line': panel_items[selected_index][1].split(':')[0]
+        }
+      )
+
+    self.view.window().show_quick_panel(panel_items, on_done)
