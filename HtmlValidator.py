@@ -88,3 +88,88 @@ class ValidatorApi(threading.Thread):
       self.result = Gzip.decompress(self.result)
 
     self.state = True
+
+class ValidateHtmlCommand(sublime_plugin.TextCommand):
+  def is_enabled(self):
+    return self.view.size() > 0
+
+  def run(self, edit):
+    thread = ValidatorApi(
+      self.view.substr( sublime.Region( 0, self.view.size() ) )
+    )
+    thread.start()
+    self.handle_thread(thread)
+
+  def handle_thread(self, thread, i = 0):
+    if ( thread.is_alive() ):
+      i = 0 if (i > 2) else i + 1
+      self.view.set_status(
+        __name__ + '-progress',
+        '%s: (-_-)%s' % (__name__, 'z' * i)
+      )
+      sublime.set_timeout(
+        lambda: self.handle_thread(thread, i),
+        100
+      )
+      return
+
+    self.view.erase_status(__name__ + '-progress')
+
+    if (thread.state):
+      self.handle_result(thread.result)
+
+  def handle_result(self, result):
+    try:
+      result = json.loads(result)
+    except ValueError as e:
+      sublime.error_message(
+        '%s: %s' % ( __name__, str(e) )
+      )
+      return
+
+    global violations
+
+    view_id             = self.view.id()
+    violations[view_id] = {}
+    error_lines         = []
+    warning_lines       = []
+    required_keys       = ('type', 'message', 'lastLine', 'extract')
+
+    for message in result.get('messages', []):
+      if all(k in message for k in required_keys):
+        if ( message['lastLine'] not in violations[view_id] ):
+          violations[view_id][ message['lastLine'] ] = []
+
+        violations[view_id][ message['lastLine'] ].append(
+          [
+            '%s: %s' % ( message['type'], message['message'] ),
+            '%s: %s' % ( message['lastLine'], message['extract'] )
+          ]
+        )
+
+        if (message['type'] == 'error'):
+          error_lines.append( message['lastLine'] )
+        else:
+          warning_lines.append( message['lastLine'] )
+
+    # error mark overlaps warning mark.
+
+    self.set_mark(
+      __name__ + '-errors',
+      error_lines,
+      Settings.error_icon
+    )
+    self.set_mark(
+      __name__ + '-warnings',
+      [line for line in warning_lines if line not in error_lines],
+      Settings.warning_icon
+    )
+
+  def set_mark(self, name, lines, icon):
+    self.view.add_regions(
+      name,
+      [sublime.Region( self.view.text_point(line - 1, 0) ) for line in lines],
+      name,
+      icon,
+      sublime.HIDDEN
+    )
