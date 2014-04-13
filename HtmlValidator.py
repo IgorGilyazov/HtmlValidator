@@ -250,3 +250,20 @@ class EventListener(sublime_plugin.EventListener):
   def on_close(self, view):
     global violations
     violations.pop(view.id(), None)
+
+# violations = {
+#   'view_id': {
+#     'line': [
+#       [
+#         'type: message',
+#         'line: extract'
+#       ],
+#       ...
+#     ],
+#     ...
+#   },
+#   ...
+# }
+
+violations = {}
+Settings.init()
