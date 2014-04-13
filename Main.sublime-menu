@@ -1,0 +1,32 @@
+[
+  {
+    "id": "tools",
+    "children": [
+      {
+        "id": "end"
+      },
+      {
+        "caption": "Validate HTML",
+        "command": "validate_html"
+      },
+      {
+        "caption": "Show HTML Violations",
+        "command": "show_html_violations"
+      },
+      {
+        "caption": "Find Next HTML Violation",
+        "command": "find_html_violation",
+        "args": {
+          "forward": 1
+        }
+      },
+      {
+        "caption": "Find Previous HTML Violation",
+        "command": "find_html_violation",
+        "args": {
+          "forward": 0
+        }
+      }
+    ]
+  }
+]
