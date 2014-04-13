@@ -222,3 +222,31 @@ class FindHtmlViolationCommand(sublime_plugin.TextCommand):
           'line': min(lines) if (forward) else max(lines)
         }
       )
+
+class EventListener(sublime_plugin.EventListener):
+  def __init__(self):
+    self.last_selected_line = None
+    sublime_plugin.EventListener.__init__(self)
+
+  def on_selection_modified(self, view):
+    global violations
+
+    view_id = view.id()
+
+    if (view_id not in violations):
+      return
+
+    current_selected_line = view.rowcol( view.sel()[0].end() )[0] + 1
+
+    if (current_selected_line != self.last_selected_line):
+      self.last_selected_line = current_selected_line
+
+      if ( current_selected_line in violations[view_id] ):
+        view.window().show_quick_panel(
+          violations[view_id][current_selected_line],
+          None
+        )
+
+  def on_close(self, view):
+    global violations
+    violations.pop(view.id(), None)
