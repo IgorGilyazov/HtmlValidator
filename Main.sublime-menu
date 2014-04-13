@@ -28,5 +28,44 @@
         }
       }
     ]
+  },
+  {
+    "id": "preferences",
+    "children": [
+      {
+        "id": "package-settings",
+        "children": [
+          {
+            "caption": "HtmlValidator",
+            "children": [
+              {
+                "caption": "Settings - Default",
+                "command": "open_file",
+                "args": {
+                  "file": "${packages}/HtmlValidator/HtmlValidator.sublime-settings"
+                }
+              },
+              {
+                "caption": "Settings - User",
+                "command": "open_file",
+                "args": {
+                  "file": "${packages}/User/HtmlValidator.sublime-settings"
+                }
+              },
+              {
+                "caption": "-"
+              },
+              {
+                "caption": "README",
+                "command": "open_file",
+                "args": {
+                  "file": "${packages}/HtmlValidator/README.md"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ]
   }
 ]
