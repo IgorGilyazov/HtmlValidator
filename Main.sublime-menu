@@ -17,14 +17,14 @@
         "caption": "Find Next HTML Violation",
         "command": "find_html_violation",
         "args": {
-          "forward": 1
+          "forward": true
         }
       },
       {
         "caption": "Find Previous HTML Violation",
         "command": "find_html_violation",
         "args": {
-          "forward": 0
+          "forward": false
         }
       }
     ]
