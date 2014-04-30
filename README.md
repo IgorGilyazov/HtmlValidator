@@ -20,7 +20,7 @@ and copy the plugin folder to your Sublime Text "Packages" directory.
 
 Clone the repository in your Sublime Text "Packages" directory:
 
-    git clone https://github.com/IgorGilyazov/HtmlValidator.git
+    git clone https://github.com/IgorGilyazov/HtmlValidator.git HtmlValidator
 
 * * *
 
